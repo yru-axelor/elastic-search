@@ -1,0 +1,27 @@
+.toolbar {
+  display: flex;
+  min-height: 60px;
+  background-color: azure;
+  width: 100%;
+  margin: 5px;
+  padding: 5px;
+  justify-content: space-evenly;
+  align-items: center;
+}
+.input {
+  border-radius: 20px;
+  padding: 7px;
+  padding-left: 12px;
+  padding-right: 28px;
+}
+.searchIcon {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 10px;
+  display: flex;
+  align-items: center;
+}
+.searchContainer {
+  position: relative;
+}
