@@ -12,16 +12,52 @@
   border-radius: 20px;
   padding: 7px;
   padding-left: 12px;
-  padding-right: 28px;
+  padding-right: 37px;
 }
 .searchIcon {
   position: absolute;
+  padding-right: 15px;
+  padding-left: 5px;
+  background-color: rgb(171, 202, 203);
   top: 0;
   bottom: 0;
-  right: 10px;
+  right: 0px;
   display: flex;
   align-items: center;
+  border: 1px solid black;
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
 }
 .searchContainer {
   position: relative;
+}
+.paginationIcon {
+  font-size: 25px;
+  display: flex;
+  gap: 10px;
+}
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.limitInput {
+  width: 75px;
+  border: 2px solid black;
+  border-radius: 4px;
+  /* border: none;
+  border-radius: 3px;
+  border-bottom: 1px solid black; */
+}
+.btn {
+  background-color: rgb(18, 17, 17);
+  color: snow;
+  display: flex;
+  align-items: center;
+}
+.limitSettings {
+  display: flex;
+  gap: 10px;
+  height: 40px;
 }
