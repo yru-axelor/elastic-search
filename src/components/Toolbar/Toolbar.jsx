@@ -15,10 +15,6 @@ const Toolbar = ({
   const [limitOpen, setLimitOpen] = useState(false);
   const [tempLimit, setTempLimit] = useState(limit);
 
-  async function handleSearchFile() {
-    await setOffset(() => 0);
-    searchFiles();
-  }
   return (
     <nav className={styles.toolbar}>
       <div className={styles.searchContainer}>
@@ -30,6 +26,8 @@ const Toolbar = ({
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               e.preventDefault();
+              setOffset(0);
+              setOffset((prev) => 0);
               searchFiles(0);
             }
           }}
@@ -37,6 +35,8 @@ const Toolbar = ({
         <i
           className={`ri-search-line ${styles.searchIcon}`}
           onClick={() => {
+            setOffset(0);
+            setOffset((prev) => 0);
             searchFiles(0);
           }}
         ></i>

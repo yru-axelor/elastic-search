@@ -23,14 +23,14 @@ const App = () => {
   const [total, setTotal] = useState(0);
   const [result, setResult] = useState([]);
   const [state, setState] = useGridState();
+  const [isLoading, setIsLoading] = useState(false);
 
   async function searchFiles(val) {
     try {
-      console.log(val);
+      setIsLoading(true);
+      const value = val ?? offset;
       const response = await rest.get(
-        `/elastic/searchFiles?searchKey=${searchKey}&limit=${limit}&offset=${
-          val ? val : offset
-        }`,
+        `/elastic/searchFiles?searchKey=${searchKey}&limit=${limit}&offset=${value}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -45,6 +45,8 @@ const App = () => {
       }
     } catch (error) {
       alert(error.message);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -71,13 +73,14 @@ const App = () => {
   }
 
   async function handlePagination(val) {
+    let newOffset;
     if (val === 1) {
-      offset + limit < total &&
-        setOffset((prev) => (prev + limit < total ? prev + limit : total));
+      newOffset = offset + limit < total ? offset + limit : total;
     } else {
-      offset - limit >= 0 &&
-        setOffset((prev) => (prev - limit < 0 ? 0 : prev - limit));
+      newOffset = offset - limit >= 0 ? offset - limit : 0;
     }
+    setOffset(newOffset);
+    await searchFiles();
   }
 
   useEffect(() => {
@@ -86,7 +89,7 @@ const App = () => {
     } else {
       setInitialRender(false);
     }
-  }, [limit, offset]);
+  }, [limit]);
 
   const records = useMemo(() => {
     const record = result?.map((record) => ({
@@ -103,6 +106,7 @@ const App = () => {
     }));
     return record;
   }, [result]);
+  if (isLoading) return <>Loading...</>;
 
   return (
     <>
@@ -122,8 +126,7 @@ const App = () => {
           <Grid
             allowSelection
             allowCheckboxSelection
-            allowCellSelection
-            selectionType="multiple"
+            // allowCellSelection
             records={records}
             columns={columns}
             state={state}
