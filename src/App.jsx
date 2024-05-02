@@ -7,7 +7,8 @@ import { rest } from "./services/rest";
 import { useCallback } from "react";
 import { produce } from "immer";
 import { useMemo } from "react";
-// title,details,size,created On, Download(Icon)
+import Loader from "./components/Loader/Loader";
+
 const columns = [
   { name: "title", title: "Title", type: "String" },
   { name: "details", title: "Details", type: "String" },
@@ -15,6 +16,7 @@ const columns = [
   { name: "created_at", title: "Created on", type: "String" },
   { name: "download", title: "Download" },
 ];
+
 const App = () => {
   const [initialRender, setInitialRender] = useState(true);
   const [searchKey, setSearchKey] = useState("");
@@ -58,7 +60,7 @@ const App = () => {
         },
       });
       if (response.data.status !== 0) {
-        alert(response.data.data.message);
+        throw new Error(response.data.data.message);
       } else {
         const link = document.createElement("a");
         link.href = response.data.data.url;
@@ -73,14 +75,15 @@ const App = () => {
   }
 
   async function handlePagination(val) {
-    let newOffset;
     if (val === 1) {
-      newOffset = offset + limit < total ? offset + limit : total;
+      if (offset + limit < total) {
+        setOffset((prev) => (prev + limit < total ? prev + limit : total));
+        await searchFiles();
+      }
     } else {
-      newOffset = offset - limit >= 0 ? offset - limit : 0;
+      offset - limit >= 0 ? setOffset((prev) => prev - limit) : setOffset(0);
+      await searchFiles();
     }
-    setOffset(newOffset);
-    await searchFiles();
   }
 
   useEffect(() => {
@@ -93,10 +96,14 @@ const App = () => {
 
   const records = useMemo(() => {
     const record = result?.map((record) => ({
-      created_at: record.created_at.substring(0, 10),
-      size: record.size,
+      created_at:
+        record.created_at.substring(11, 19) +
+        " " +
+        record.created_at.substring(0, 10),
+
+      size: record.size + " MB",
       title: record.title,
-      details: record.body,
+      details: record.body ?? "NA",
       download: (
         <i
           className={`ri-file-download-fill downloadIcon`}
@@ -106,7 +113,6 @@ const App = () => {
     }));
     return record;
   }, [result]);
-  if (isLoading) return <>Loading...</>;
 
   return (
     <>
@@ -125,8 +131,6 @@ const App = () => {
         <>
           <Grid
             allowSelection
-            allowCheckboxSelection
-            // allowCellSelection
             records={records}
             columns={columns}
             state={state}
@@ -134,6 +138,7 @@ const App = () => {
           />
         </>
       )}
+      <Loader loading={isLoading} />
     </>
   );
 };

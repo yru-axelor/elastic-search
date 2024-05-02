@@ -27,7 +27,6 @@ const Toolbar = ({
             if (e.key === "Enter") {
               e.preventDefault();
               setOffset(0);
-              setOffset((prev) => 0);
               searchFiles(0);
             }
           }}
@@ -36,7 +35,6 @@ const Toolbar = ({
           className={`ri-search-line ${styles.searchIcon}`}
           onClick={() => {
             setOffset(0);
-            setOffset((prev) => 0);
             searchFiles(0);
           }}
         ></i>
@@ -46,27 +44,31 @@ const Toolbar = ({
           {offset + 1 < total ? offset + 1 : total} to{" "}
           {offset + limit < total ? offset + limit : total} of {total}
           <div className={styles.paginationIcon}>
-            <i
-              className="ri-arrow-left-s-line"
+            <button
               onClick={(e) => {
                 e.stopPropagation();
                 handlePagination(-1);
               }}
-            ></i>
-            <i
-              className="ri-arrow-right-s-line"
+              disabled={offset <= 0}
+            >
+              <i className="ri-arrow-left-s-line"></i>
+            </button>
+            <button
               onClick={(e) => {
                 e.stopPropagation();
                 handlePagination(1);
               }}
-            ></i>
+              disabled={offset + limit >= total}
+            >
+              <i className="ri-arrow-right-s-line"></i>
+            </button>
           </div>
         </div>
       ) : (
         <div className={styles.limitSettings}>
           <input
             type="number"
-            min={0}
+            min={1}
             className={styles.limitInput}
             value={tempLimit}
             onChange={(e) => setTempLimit(Number(e.target.value))}
